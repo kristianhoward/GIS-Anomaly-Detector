@@ -1,0 +1,29 @@
+[project]
+name = "GIS-Anomaly-Detector"
+version = "0.1.0"
+description = "\"Verify OpenStreetMaps data \""
+authors = [
+    {name = "kristianhoward",email = "kristianhowardjr@gmail.com"}
+]
+license = "MIT"
+requires-python = ">=3.10"
+dependencies = [
+    "osmnx",
+    "marimo",
+    "pytest",
+    "geodatasets",
+    "matplotlib",
+    "folium",
+    "scikit-learn",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["api*"]
+
+[tool.marimo.runtime]
+pythonpath = ["app"]
