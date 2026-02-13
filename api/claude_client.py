@@ -32,7 +32,6 @@ class ClaudeClient:
     def __init__(self, client: Client) -> None:
         self._client = client
 
-
     @staticmethod
     def _user_prompt(features_json: List[Dict[str, Union[int, float]]]) -> str:
         return f"""
@@ -64,7 +63,8 @@ class ClaudeClient:
         return message.content
 
     def explain_anomaly(self, location_data: List[Dict[str, Union[int, float]]]) -> List[Dict[str, str]]:
-        msg = self._send_message(f"{system_prompt}\n\n{HUMAN_PROMPT} {self._user_prompt(self._shrink_json_data(location_data))} {AI_PROMPT}")
+        msg = self._send_message(
+            f"{system_prompt}\n\n{HUMAN_PROMPT} {self._user_prompt(self._shrink_json_data(location_data))} {AI_PROMPT}")
         return json.loads(msg[0].text.replace("json", "").replace("`", ""))
 
     @staticmethod

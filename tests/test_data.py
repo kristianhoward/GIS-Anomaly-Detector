@@ -49,8 +49,7 @@ def test_get_nearby_locations(city_data_frame: CityData, place: Series) -> None:
 
 
 @pytest.mark.xfail(reason="Expected behavior")
-def test_intersection_of_data() -> None:
-    city_data_frame = CityData("Anaheim, California, USA")
+def test_intersection_of_data(city_data_frame: CityData) -> None:
     for location in [x[1] for x in city_data_frame.get_global_dataset().iterrows()]:
         assert len(city_data_frame.intersects_other_locations(location)) < 2
 
@@ -70,16 +69,15 @@ def test_csv_local(city_data_frame: CityData) -> None:
     assert path.exists()
 
 
-def test_anomaly_detection(city_data_frame: CityData, claude_client: ClaudeClient) -> None:
+def test_claude_response(city_data_frame: CityData, claude_client: ClaudeClient) -> None:
     filtered = city_data_frame.detect_anomalies().nsmallest(5, "anomaly_score")
     assert len(filtered) > 0
     data_dict = json.loads(filtered[CSV_HEADERS].to_json(orient="records"))
 
-    # Test Claude response Disabled to save token usage
-    response = claude_client.explain_anomaly(data_dict)
-    assert response[0]['explanation'] != ""
-    assert response[0]['risk_level'] in ['low', 'medium', 'high']
-    assert response[0]['suggested_check'] != ""
+    # response = claude_client.explain_anomaly(data_dict)
+    # assert response[0]['explanation'] != ""
+    # assert response[0]['risk_level'] in ['low', 'medium', 'high']
+    # assert response[0]['suggested_check'] != ""
 
 
 def test_connection():

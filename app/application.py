@@ -30,7 +30,7 @@ def _():
     )
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(ClaudeClient, anthropic):
     claude_client = ClaudeClient(anthropic.Anthropic())
     return (claude_client,)
@@ -124,7 +124,7 @@ def _(form, is_form_valid, mo):
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(folium, results):
     anomalies = results.detect_anomalies().to_crs(epsg=4326).nsmallest(5, "anomaly_score")
     center_lon = anomalies.union_all().centroid.x
