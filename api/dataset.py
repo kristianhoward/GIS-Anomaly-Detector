@@ -1,12 +1,8 @@
-import csv
 import math
-import tempfile
 from pathlib import Path
-from typing import List, Dict, Any, Mapping, Optional, Tuple, Hashable
+from typing import List, Optional, Tuple
 
-import geopandas
 import osmnx
-import pandas
 from geopandas import GeoDataFrame
 from pandas import Series, DataFrame
 from shapely import Point, Polygon
@@ -14,7 +10,7 @@ from shapely import Point, Polygon
 from sklearn.ensemble import IsolationForest
 from sklearn.preprocessing import StandardScaler
 
-from api.constants import CSV_HEADERS, LOCATION_TAGS
+from api.constants import CSV_HEADERS, LOCATION_TAGS, ANOMALY_HEADERS
 
 osmnx.settings.use_cache = True
 
@@ -27,6 +23,7 @@ class CityData:
         self._edges = self._to_meters(self._edges)
         self._buildings = self._dataset[self._dataset["building"].notna()]
         self._amenities = self._dataset[self._dataset['name'].notna()]
+        self._amenities = self._amenities.merge(self._get_location_dataframe(), on="name", how="left")
 
     @staticmethod
     def _to_meters(data: GeoDataFrame) -> GeoDataFrame:
@@ -46,7 +43,7 @@ class CityData:
 
         return p.centroid
 
-    def get_geo_dataframe(self) -> GeoDataFrame:
+    def get_global_dataset(self) -> GeoDataFrame:
         return self._dataset
 
     def get_centroid(self) -> Point:
@@ -63,7 +60,8 @@ class CityData:
         return result
 
     def get_place_of_interest(self, location_name: str) -> List[Series]:
-        return [self._amenities.iloc[x] for x in range(len(self._amenities)) if location_name == self._amenities.iloc[x]['name']]
+        return [self._amenities.iloc[x] for x in range(len(self._amenities)) if
+                location_name == self._amenities.iloc[x]['name']]
 
     def get_nearest_street_distance(self, location: Series) -> Optional[int]:
         if not self.is_geometrical_entry(location):
@@ -73,11 +71,15 @@ class CityData:
 
     def get_nearby_locations(self, location: Series, *, meters: int) -> List[Series]:
         return [self._amenities.iloc[x] for x in range(len(self._amenities)) if
-                self._amenities.geometry.iloc[x].distance(location['geometry']) < meters and self._amenities.iloc[x]['name'] != location['name']]
+                self._amenities.geometry.iloc[x].distance(location['geometry']) < meters and self._amenities.iloc[x][
+                    'name'] != location['name']]
 
     def get_nearest_location(self, location: Series) -> Tuple[Optional[Series], Optional[int]]:
-        min_location_distance = min(self._amenities.geometry.iloc[x].distance(location['geometry']) for x in range(len(self._amenities)) if self._amenities.geometry.iloc[x] != location['geometry'])
-        min_location = [self._amenities.iloc[x] for x in range(len(self._amenities)) if self._amenities.geometry.iloc[x].distance(location['geometry']) == min_location_distance][0]
+        min_location_distance = min(
+            self._amenities.geometry.iloc[x].distance(location['geometry']) for x in range(len(self._amenities)) if
+            self._amenities.geometry.iloc[x] != location['geometry'])
+        min_location = [self._amenities.iloc[x] for x in range(len(self._amenities)) if
+                        self._amenities.geometry.iloc[x].distance(location['geometry']) == min_location_distance][0]
 
         return min_location, min_location_distance
 
@@ -94,29 +96,32 @@ class CityData:
 
         return intersections
 
+    def _get_location_dataframe(self) -> DataFrame:
+        data = {CSV_HEADERS[0]: [], CSV_HEADERS[1]: [], CSV_HEADERS[2]: [], CSV_HEADERS[3]: [], CSV_HEADERS[4]: []}
+
+        for location in [x[1] for x in self._amenities.iterrows()]:
+            nearest_st_distance = y if (y := self.get_nearest_street_distance(location)) else 0
+            nearest_location_distance = y if (y := self.get_nearest_location(location)[1]) else 0
+            if isinstance(location['name'], float):
+                continue
+            else:
+                name = location['name']
+            data[CSV_HEADERS[0]].append(name)
+            data[CSV_HEADERS[1]].append(nearest_st_distance)
+            data[CSV_HEADERS[2]].append(nearest_location_distance)
+            data[CSV_HEADERS[3]].append(len(self.get_nearby_locations(location, meters=500)))
+            data[CSV_HEADERS[4]].append(len(self.intersects_other_locations(location)))
+
+        return DataFrame(data)
+
     def to_csv(self, path: Path) -> None:
-        with open(path, 'w', newline="") as f:
-            csv_writer = csv.writer(f)
-            csv_writer.writerow(CSV_HEADERS)
+        self._amenities.to_csv(path, chunksize=100_000)
 
-            for location in [x[1] for x in self._amenities.iterrows()]:
-                nearest_st_distance = y if (y := self.get_nearest_street_distance(location)) else 0
-                nearest_location_distance = y if (y := self.get_nearest_location(location)[1]) else 0
-                if isinstance(location['name'], float):
-                    continue
-                else:
-                    name = location['name']
-                csv_writer.writerow((name, nearest_st_distance, nearest_location_distance, len(self.intersects_other_locations(location))))
+    @staticmethod
+    def _anomalies_detected(dataframe: DataFrame, percent: float = 0.05) -> DataFrame:
+        ids = dataframe[CSV_HEADERS[0]]
 
-    def detect_anomalies_csv(self, write_path: Optional[Path] = None) -> DataFrame:
-        with tempfile.TemporaryDirectory() as tmpdir:
-            path = Path(tmpdir) / "test.csv"
-            self.to_csv(path)
-            csv_file = pandas.read_csv(path)
-
-        ids = csv_file[CSV_HEADERS[0]]
-
-        vals_only = csv_file.drop(columns=[CSV_HEADERS[0]])
+        vals_only = dataframe[CSV_HEADERS].drop(columns=[CSV_HEADERS[0]])
 
         # Fill missing values
         vals_only = vals_only.fillna(0)
@@ -128,7 +133,7 @@ class CityData:
         # Train model
         model = IsolationForest(
             n_estimators=100,
-            contamination=0.05,  # assume 5% anomalies
+            contamination=percent,  # assume 5% anomalies
             random_state=42
         )
 
@@ -138,18 +143,17 @@ class CityData:
         scores = model.decision_function(X_scaled)
         preds = model.predict(X_scaled)
 
-        # Convert predictions
         # IsolationForest: -1 = anomaly, 1 = normal
         is_anomaly = (preds == -1).astype(int)
 
         # Save results
-        results = pandas.DataFrame({
-            "business_name": ids,
-            "anomaly_score": scores,
-            "is_anomaly": is_anomaly
+        results = DataFrame({
+            ANOMALY_HEADERS[0]: ids,
+            ANOMALY_HEADERS[1]: scores,
+            ANOMALY_HEADERS[2]: is_anomaly
         })
 
-        if path is not None:
-            results.to_csv(write_path, index=False)
-
         return results
+
+    def detect_anomalies(self, percent: float = 0.05) -> DataFrame:
+        return self._amenities.merge(self._anomalies_detected(self._amenities, percent=percent), on="name", how="left")

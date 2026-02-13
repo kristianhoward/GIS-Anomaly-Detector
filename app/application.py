@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.19.8"
+__generated_with = "0.19.11"
 app = marimo.App(width="medium")
 
 
@@ -10,12 +10,30 @@ def _():
     import osmnx
     import geodatasets
     import folium
+    import anthropic
+    import json
 
-    from api.constants import COUNTRY_CODES
+    from api.constants import COUNTRY_CODES, CSV_HEADERS
     from api.dataset import CityData
+    from api.claude_client import ClaudeClient
 
 
-    return COUNTRY_CODES, CityData, folium, mo
+    return (
+        COUNTRY_CODES,
+        CSV_HEADERS,
+        CityData,
+        ClaudeClient,
+        anthropic,
+        folium,
+        json,
+        mo,
+    )
+
+
+@app.cell
+def _(ClaudeClient, anthropic):
+    claude_client = ClaudeClient(anthropic.Anthropic())
+    return (claude_client,)
 
 
 @app.cell(hide_code=True)
@@ -30,30 +48,18 @@ def _(mo):
 
 
 @app.cell(hide_code=True)
-def _():
-    tags = {
-        "amenity": False,
-        "shop": False,
-        "office": False
-    }
-    return (tags,)
-
-
-@app.cell(hide_code=True)
-def _(COUNTRY_CODES, mo, tags):
+def _(COUNTRY_CODES, mo):
     form = (
         mo.md(
             """
                 ### Please enter your city: {user_city}
                 ### Please enter your state, no abbreviations: {user_state}
                 ### Please enter your country: {user_country}
-                ### Please enter which businesses to include in your search: {multiselect}
             """
         ).batch(
             user_city=mo.ui.text(),
             user_state=mo.ui.text(),
             user_country=mo.ui.dropdown(COUNTRY_CODES),
-            multiselect=mo.ui.multiselect(options=tags.keys())
         ).form(
             show_clear_button=True, 
             bordered=False,
@@ -80,21 +86,18 @@ def _(form):
 
 
 @app.cell(hide_code=True)
-def _(CityData, tags):
+def _(CityData):
     def request(value) -> CityData:
         user_city = value['user_city']
         user_state = value['user_state']
         user_country = value['user_country']
-        user_selection = value['multiselect']
 
-        user_tags = {s: s in tags.keys() for s in user_selection}
         query = f"{user_city}, {user_state}, {user_country}"
 
         print(query)
-        print(user_tags)
         assert isinstance(query, str)
 
-        return CityData(query, tags=user_tags)
+        return CityData(query)
 
     return (request,)
 
@@ -123,11 +126,12 @@ def _(form, is_form_valid, mo):
 
 @app.cell
 def _(folium, results):
-    center_lon = results.get_centroid().x
-    center_lat = results.get_centroid().y
+    anomalies = results.detect_anomalies().to_crs(epsg=4326).nsmallest(5, "anomaly_score")
+    center_lon = anomalies.union_all().centroid.x
+    center_lat = anomalies.union_all().centroid.y
     m = folium.Map(location=(center_lat, center_lon), zoom_start=13)
     folium.Choropleth(
-        geo_data=results.get_geo_dataframe(),
+        geo_data=anomalies,
         name="TBD",
     ).add_to(m)
     m
@@ -135,9 +139,33 @@ def _(folium, results):
 
 
 @app.cell(hide_code=True)
-def _(mo, results):
-    places = ", <br> ".join(results.get_places_of_interest_names())
-    mo.md(places)
+def _(CSV_HEADERS, claude_client, json, results):
+    filtered = results.detect_anomalies().nsmallest(5, "anomaly_score")
+    data_dict = json.loads(filtered[CSV_HEADERS].to_json(orient="records"))
+    responses = claude_client.explain_anomaly(data_dict)
+    return filtered, responses
+
+
+@app.cell(hide_code=True)
+def _(is_form_valid, mo):
+    mo.md(f"""
+    # {"Anamolies: " if is_form_valid() else ''}
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(filtered, mo, responses):
+    result = []
+    for r in range(len(responses)):
+        result.append(mo.md(f"#{filtered['name'].iloc[r]}"))
+        result.append(mo.md(f"## Explanation: {responses[r]['explanation']}"))
+        result.append(mo.md(f"## Risk Level: {responses[r]['risk_level']}"))
+        result.append(mo.md(f"## Suggestion: {responses[r]['suggested_check']}"))
+        result.append(mo.md(f"""
+        =========================================================================
+        """))
+    result
     return
 
 
