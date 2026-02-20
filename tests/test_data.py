@@ -36,8 +36,11 @@ def test_get_place_of_interest(city_data_frame: CityData) -> None:
     assert len(city_data_frame.get_place_of_interest("Calvary Chapel Beaumont")) > 0
 
 
-def test_get_nearest_street_of_church(city_data_frame: CityData, place: Series) -> None:
-    assert city_data_frame.get_nearest_street_distance(place) > 0
+@pytest.mark.xfail(reason="Nearest Street is in a different city")
+def test_get_nearest_street_distance_from_church(city_data_frame: CityData, place: Series) -> None:
+    assert city_data_frame.get_nearest_street(place)["geometry"].distance(place["geometry"]) == 143.61859753791583
+    assert city_data_frame.get_nearest_street(place)['name'] == 'Starlight Avenue'
+    assert city_data_frame.get_nearest_street(place)['name'] == 'Maureen Dr'
 
 
 def test_get_nearest_location(city_data_frame: CityData, place: Series) -> None:

@@ -46,6 +46,12 @@ class CityData:
     def get_global_dataset(self) -> GeoDataFrame:
         return self._dataset
 
+    def get_amenities(self) -> GeoDataFrame:
+        return self._amenities
+
+    def get_street_edges_dataset(self) -> GeoDataFrame:
+        return self._edges
+
     def get_centroid(self) -> Point:
         return self._dataset.union_all().centroid
 
@@ -63,11 +69,24 @@ class CityData:
         return [self._amenities.iloc[x] for x in range(len(self._amenities)) if
                 location_name == self._amenities.iloc[x]['name']]
 
-    def get_nearest_street_distance(self, location: Series) -> Optional[int]:
+    def get_nearest_street(self, location: Series) -> Optional[Series]:
         if not self.is_geometrical_entry(location):
             return None
 
-        return min(self._edges.geometry.iloc[x].distance(location['geometry']) for x in range(len(self._edges)))
+        p = location["geometry"]
+
+        if isinstance(location["geometry"], Polygon):
+            p = self.get_center_of_polygon(location)
+
+        u, v, key = osmnx.distance.nearest_edges(
+            self._street_graph,
+            X=p.x,
+            Y=p.y
+        )
+
+        nearest = self._edges.loc[(u, v, key)]
+
+        return nearest
 
     def get_nearby_locations(self, location: Series, *, meters: int) -> List[Series]:
         return [self._amenities.iloc[x] for x in range(len(self._amenities)) if
@@ -100,7 +119,11 @@ class CityData:
         data = {CSV_HEADERS[0]: [], CSV_HEADERS[1]: [], CSV_HEADERS[2]: [], CSV_HEADERS[3]: [], CSV_HEADERS[4]: []}
 
         for location in [x[1] for x in self._amenities.iterrows()]:
-            nearest_st_distance = y if (y := self.get_nearest_street_distance(location)) else 0
+            nearest_st = self.get_nearest_street(location)
+            if nearest_st is None:
+                nearest_st_distance = 0
+            else:
+                nearest_st_distance = nearest_st["geometry"].distance(location["geometry"])
             nearest_location_distance = y if (y := self.get_nearest_location(location)[1]) else 0
             if isinstance(location['name'], float):
                 continue
