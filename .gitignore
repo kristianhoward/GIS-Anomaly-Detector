@@ -180,6 +180,6 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 /api/cache
-app/__marimo__/session/application.py.json
+apps/__marimo__/session/application.py.json
 /.idea
 /cache

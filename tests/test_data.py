@@ -77,10 +77,10 @@ def test_claude_response(city_data_frame: CityData, claude_client: ClaudeClient)
     assert len(filtered) > 0
     data_dict = json.loads(filtered[CSV_HEADERS].to_json(orient="records"))
 
-    # response = claude_client.explain_anomaly(data_dict)
-    # assert response[0]['explanation'] != ""
-    # assert response[0]['risk_level'] in ['low', 'medium', 'high']
-    # assert response[0]['suggested_check'] != ""
+    response = claude_client.explain_anomaly(data_dict)
+    assert response[0]['explanation'] != ""
+    assert response[0]['risk_level'] in ['low', 'medium', 'high']
+    assert response[0]['suggested_check'] != ""
 
 
 def test_connection():
