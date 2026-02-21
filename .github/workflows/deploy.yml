@@ -19,11 +19,13 @@ jobs:
                 python-version: "3.11"
             - name: Install dependencies
               run: |
+                cd $GITHUB_WORKSPACE
                 pip install poetry
                 poetry install
 
             - name: 📄 Export notebook
               run: |
+                cd $GITHUB_WORKSPACE
                 poetry run marimo export html-wasm apps/notebook.py -o site --mode run
 
             - name: 📦 Upload Pages Artifact
