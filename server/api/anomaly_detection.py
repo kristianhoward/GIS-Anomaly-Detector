@@ -35,7 +35,7 @@ class CityData:
         self._amenities = self._amenities.merge(self._get_anomaly_dataframe(self._amenities), on="name", how="left")
 
     @classmethod
-    def from_location(cls, location: str) -> CityData:
+    def from_location(cls, location: str) -> 'CityData':
         return CityData(
             *get_location_data(location)
         )
