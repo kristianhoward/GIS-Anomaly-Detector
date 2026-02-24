@@ -1,15 +1,9 @@
-ALL_TAGS = {
-    "highway": True,
-    "building": True,
-    "landuse": True,
-    "amenity": True
-}
-
 LOCATION_TAGS = {
     "building": True,
     "amenity": True
 }
-
+DATA_HEADERS = ['name', 'Meters From Street', 'Meters from Location', 'Density', 'Building Intersections']
+ANOMALY_HEADERS = ['name', 'anomaly_score', 'is_anomaly']
 COUNTRY_CODES = [
     "AFG",
     "ALB",
@@ -261,5 +255,3 @@ COUNTRY_CODES = [
     "ZWE",
     "ALA"
 ]
-CSV_HEADERS = ['name', 'Meters From Street', 'Meters from Location', 'Density', 'Building Intersections']
-ANOMALY_HEADERS = ['name', 'anomaly_score', 'is_anomaly']

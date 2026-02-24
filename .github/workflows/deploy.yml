@@ -21,17 +21,10 @@ jobs:
               run: |
                 python -m pip install --upgrade pip
                 pip install .
-                pip install micropip
-                await micropip.install("https://github.com/kristianhoward/GIS-Anomaly-Detector/releases/download/v0.1.0/gis_anomaly_detector-0.1.0-py3-none-any.whl")
 
             - name: 📄 Export notebook
-              env:
-                ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
               run: |
-                python -m pip install --upgrade pip
-                marimo export html-wasm apps/application.py -o site --mode edit \
-                --include-files api/claude_client.py,api/constants.py,api/dataset.py \
-                --include-packages anthropic,pandas,folium
+                  marimo export html-wasm notebook.py -o path/to/output --mode run
 
             - name: 📦 Upload Pages Artifact
               uses: actions/upload-pages-artifact@v3

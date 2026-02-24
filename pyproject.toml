@@ -6,16 +6,10 @@ authors = [
     { name = "kristianhoward", email = "kristianhowardjr@gmail.com" }
 ]
 license = "MIT"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
-    "osmnx",
     "marimo",
     "pytest",
-    "geodatasets",
-    "matplotlib",
-    "folium",
-    "scikit-learn",
-    "anthropic"
 ]
 
 [build-system]

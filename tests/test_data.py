@@ -1,89 +1,36 @@
-import json
-import os
-import tempfile
-from pathlib import Path
-
-import anthropic
 import pytest
-import requests
-from pandas import Series
 
-from api.claude_client import ClaudeClient
-from api.constants import CSV_HEADERS
-from api.dataset import CityData
-from conftest import city_data_frame
+from typing import Dict
+from shapely.geometry import shape
+from api.dataset import AnomalyDetectorConn
 
-
-@pytest.fixture(scope="session")
-def place(city_data_frame: CityData) -> Series:
-    return city_data_frame.get_place_of_interest("Calvary Chapel Beaumont")[0]
+_CITY = "Beaumont, CA, USA"
+_PLACE = "Calvary Chapel Beaumont"
 
 
-def test_get_dataset(city_data_frame: CityData) -> None:
-    assert len(city_data_frame.get_places_of_interest_names()) > 0
+def test_get_dataset(anomaly_detector: AnomalyDetectorConn) -> None:
+    assert len(anomaly_detector.get_city_data(city=_CITY)) > 0
 
 
-def test_all_places_of_interest_names(city_data_frame: CityData) -> None:
-    for name in city_data_frame.get_places_of_interest_names():
-        assert isinstance(name, str)
+def test_get_place_of_interest(anomaly_detector: AnomalyDetectorConn) -> None:
+    assert len(anomaly_detector.get_place_data(location=_PLACE, city=_CITY)) > 0
 
 
-def test_get_centralized_point_of_dataset(city_data_frame: CityData) -> None:
-    assert city_data_frame.get_centroid()
+class TestNearbyElements:
+    @pytest.fixture(scope="class")
+    def nearest_data(self, anomaly_detector: AnomalyDetectorConn) -> Dict:
+        return anomaly_detector.get_nearest_place_data(location=_PLACE, city=_CITY)
 
+    def test_get_nearest_street_distance_from_church(self, nearest_data: Dict) -> None:
+        assert nearest_data['street']['name'] == "Starlight Avenue"
+        assert shape(nearest_data['street']['geometry']).distance(
+            shape(nearest_data['place']['geometry'])) == 143.61859753791583
 
-def test_get_place_of_interest(city_data_frame: CityData) -> None:
-    assert len(city_data_frame.get_place_of_interest("Calvary Chapel Beaumont")) > 0
+    def test_get_nearest_location(self, nearest_data: Dict) -> None:
+        assert nearest_data['location']['name'] == 'Starlight Elementary School'
 
+    def test_get_nearby_locations(self, nearest_data: Dict) -> None:
+        assert len(nearest_data['nearby']) == 1
 
-@pytest.mark.xfail(reason="Nearest Street is in a different city")
-def test_get_nearest_street_distance_from_church(city_data_frame: CityData, place: Series) -> None:
-    assert city_data_frame.get_nearest_street(place)["geometry"].distance(place["geometry"]) == 143.61859753791583
-    assert city_data_frame.get_nearest_street(place)['name'] == 'Starlight Avenue'
-    assert city_data_frame.get_nearest_street(place)['name'] == 'Maureen Dr'
-
-
-def test_get_nearest_location(city_data_frame: CityData, place: Series) -> None:
-    assert city_data_frame.get_nearest_location(place)[0]['name'] == 'Starlight Elementary School'
-
-
-def test_get_nearby_locations(city_data_frame: CityData, place: Series) -> None:
-    assert len(city_data_frame.get_nearby_locations(place, meters=500)) == 1
-
-
-@pytest.mark.xfail(reason="Expected behavior")
-def test_intersection_of_data(city_data_frame: CityData) -> None:
-    for location in [x[1] for x in city_data_frame.get_global_dataset().iterrows()]:
-        assert len(city_data_frame.intersects_other_locations(location)) < 2
-
-
-def test_csv(city_data_frame: CityData) -> None:
-    with tempfile.TemporaryDirectory() as tmpdir:
-        path = Path(tmpdir) / "test.csv"
-        city_data_frame.to_csv(path)
-
-        assert path.exists()
-
-
-def test_csv_local(city_data_frame: CityData) -> None:
-    path = Path.cwd() / "test.csv"
-    city_data_frame.to_csv(path)
-
-    assert path.exists()
-
-
-def test_claude_response(city_data_frame: CityData, claude_client: ClaudeClient) -> None:
-    filtered = city_data_frame.detect_anomalies().nsmallest(5, "anomaly_score")
-    assert len(filtered) > 0
-    data_dict = json.loads(filtered[CSV_HEADERS].to_json(orient="records"))
-
-    response = claude_client.explain_anomaly(data_dict)
-    assert response[0]['explanation'] != ""
-    assert response[0]['risk_level'] in ['low', 'medium', 'high']
-    assert response[0]['suggested_check'] != ""
-
-
-def test_connection():
-    assert requests.get("https://api.anthropic.com").status_code == 404
-    assert anthropic.__version__ != ""
-    assert os.environ.get("ANTHROPIC_API_KEY") is not None
+    def test_intersection_of_data(self, nearest_data: Dict) -> None:
+        assert len(nearest_data['intersections']) == 0
