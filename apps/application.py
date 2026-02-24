@@ -10,6 +10,7 @@ def _():
     import json
     import requests
     import uuid
+    import os
 
     COUNTRY_CODES = [
         "AFG",
@@ -262,7 +263,7 @@ def _():
         "ZWE",
         "ALA"
     ]
-    return COUNTRY_CODES, json, mo, requests, uuid
+    return COUNTRY_CODES, json, mo, os, requests, uuid
 
 
 @app.cell(hide_code=True)
@@ -284,8 +285,8 @@ def _(json):
 
 
 @app.cell(hide_code=True)
-def _():
-    conn = "http://127.0.0.1:8000/"
+def _(os):
+    conn = os.getenv("API_BASE_URL")
     return (conn,)
 
 

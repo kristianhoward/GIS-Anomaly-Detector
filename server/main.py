@@ -1,9 +1,18 @@
 from fastapi import FastAPI
 from server.api.anomaly_detection import CityData, get_location_data
 from server.api.utilities import serialize_location
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://kristianhoward.github.io/GIS-Anomaly-Detector/"],  # tighten later
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def root():
