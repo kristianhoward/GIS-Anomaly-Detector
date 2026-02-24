@@ -8,7 +8,6 @@ app = marimo.App(width="medium")
 def _():
     import marimo as mo
     import json
-    import requests
     import uuid
     import httpx
 
@@ -263,7 +262,7 @@ def _():
         "ZWE",
         "ALA"
     ]
-    return COUNTRY_CODES, httpx, json, mo, requests, uuid
+    return COUNTRY_CODES, httpx, json, mo, uuid
 
 
 @app.cell(hide_code=True)
@@ -346,7 +345,7 @@ def _(form):
 
 
 @app.cell(hide_code=True)
-def _(conn, form, httpx, is_form_valid, map_data, mo, requests):
+def _(conn, form, httpx, is_form_valid, map_data, mo):
     mo.stop(not is_form_valid())
 
     user_city = form.value['user_city']
@@ -358,7 +357,7 @@ def _(conn, form, httpx, is_form_valid, map_data, mo, requests):
     print(query)
 
     with httpx.Client() as client:
-        response = requests.get(conn + "/anomaly", params={"city": query})
+        response = client.get(conn + "/anomaly", params={"city": query})
         anomaly_data = map_data(response.json())
     return (anomaly_data,)
 
