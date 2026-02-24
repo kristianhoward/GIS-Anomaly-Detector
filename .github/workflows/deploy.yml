@@ -24,7 +24,7 @@ jobs:
 
             - name: 📄 Export notebook
               run: |
-                  marimo export html-wasm application.py -o path/to/output --mode run
+                poetry run marimo export html-wasm apps/application.py -o site --mode run
 
             - name: 📦 Upload Pages Artifact
               uses: actions/upload-pages-artifact@v3
