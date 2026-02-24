@@ -8,7 +8,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://kristianhoward.github.io/GIS-Anomaly-Detector/"],  # tighten later
+    allow_origins=["https://kristianhoward.github.io/"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

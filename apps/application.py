@@ -285,7 +285,7 @@ def _(json):
 
 @app.cell(hide_code=True)
 def _():
-    conn = "http://3.140.253.230"
+    conn = "https://gis-anomaly-detector"
     return (conn,)
 
 
