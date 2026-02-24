@@ -10,6 +10,7 @@ def _():
     import json
     import requests
     import uuid
+    import httpx
 
     COUNTRY_CODES = [
         "AFG",
@@ -262,7 +263,7 @@ def _():
         "ZWE",
         "ALA"
     ]
-    return COUNTRY_CODES, json, mo, requests, uuid
+    return COUNTRY_CODES, httpx, json, mo, requests, uuid
 
 
 @app.cell(hide_code=True)
@@ -345,7 +346,7 @@ def _(form):
 
 
 @app.cell(hide_code=True)
-def _(conn, form, is_form_valid, map_data, mo, requests):
+def _(conn, form, httpx, is_form_valid, map_data, mo, requests):
     mo.stop(not is_form_valid())
 
     user_city = form.value['user_city']
@@ -356,8 +357,9 @@ def _(conn, form, is_form_valid, map_data, mo, requests):
 
     print(query)
 
-    response = requests.get(conn + "/anomaly", params={"city": query})
-    anomaly_data = map_data(response.json())
+    with httpx.Client() as client:
+        response = requests.get(conn + "/anomaly", params={"city": query})
+        anomaly_data = map_data(response.json())
     return (anomaly_data,)
 
 
