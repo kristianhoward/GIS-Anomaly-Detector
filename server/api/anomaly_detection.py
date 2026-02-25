@@ -27,9 +27,9 @@ class CityData:
                  street_graph: MultiDiGraph,
                  ):
         self._full_dataset = to_meters(location_geo)
-        self._street_graph = street_graph
-        _, self._edges = osmnx.graph_to_gdfs(self._street_graph)
+        _, self._edges = osmnx.graph_to_gdfs(street_graph)
         self._edges = to_meters(self._edges)
+        self._street_graph = osmnx.projection.project_graph(street_graph, to_crs=self._edges.crs)
         self._buildings = self._full_dataset[self._full_dataset["building"].notna()]
         self._amenities = self._full_dataset[self._full_dataset['name'].notna()]
         self._amenities = self._amenities.merge(self._get_anomaly_dataframe(self._amenities), on="name", how="left")

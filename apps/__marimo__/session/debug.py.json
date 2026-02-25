@@ -1,0 +1,171 @@
+{
+  "version": "1",
+  "metadata": {
+    "marimo_version": "0.20.2"
+  },
+  "cells": [
+    {
+      "id": "bkHC",
+      "code_hash": "d67eeb66256f68cc2c3feb5f578b50cd",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h1 id=\"welcome-to-the-openstreetmap-data-validation-tool\">Welcome to the OpenStreetMap Data Validation Tool!</h1>\n<span class=\"paragraph\">This tool is designed to help you validate and clean OpenStreetMap (OSM) data. It provides a user-friendly interface for checking the quality of OSM data, identifying errors, and making necessary corrections.</span>\n<span class=\"paragraph\">To get started, enter your city name in the input field below and click the \"Validate\" button. The tool will analyze the OSM data for that city and provide you with a report of any issues found, along with suggestions for how to fix them.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Hbol",
+      "code_hash": "100bd00e7722c891ed075d732c316527",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "MJUe",
+      "code_hash": "cb9c58ae20b7200cefd423ce1336f9b3",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "vblA",
+      "code_hash": "4d0e26a4ed302d5abcf084aed766fc3a",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "lEQa",
+      "code_hash": "c68e8b6b26bf481eb6ffe54d72b1f635",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "PKri",
+      "code_hash": "9d1e26c23971b8661bb4d3b9220d46d7",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Xref",
+      "code_hash": "3fcdb73d36d54f2cc22d0f68e6b6e182",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<marimo-ui-element object-id='lEQa-11' random-id='8af2ce94-715c-b889-965f-0c994d6973fe'><marimo-form data-initial-value='null' data-label='null' data-element-id='&quot;lEQa-10&quot;' data-loading='false' data-bordered='false' data-submit-button-label='&quot;Submit&quot;' data-submit-button-disabled='false' data-clear-on-submit='false' data-show-clear-button='true' data-clear-button-label='&quot;Clear&quot;' data-should-validate='false'><marimo-ui-element object-id='lEQa-10' random-id='0cdebf05-1865-0861-48ac-fb4306ce795c'><marimo-dict data-initial-value='{&quot;user_city&quot;:&quot;&quot;,&quot;user_state&quot;:&quot;&quot;,&quot;user_country&quot;:[]}' data-label='null' data-element-ids='{&quot;lEQa-7&quot;:&quot;user_city&quot;,&quot;lEQa-8&quot;:&quot;user_state&quot;,&quot;lEQa-9&quot;:&quot;user_country&quot;}'><span class=\"markdown prose dark:prose-invert contents\"><h3 id=\"please-enter-your-city-user_city\">Please enter your city: <marimo-ui-element object-id='lEQa-7' random-id='2588246b-cab2-55fe-f358-afa2e7a2afdd'><marimo-text data-initial-value='&quot;&quot;' data-label='null' data-placeholder='&quot;&quot;' data-kind='&quot;text&quot;' data-full-width='false' data-disabled='false' data-debounce='true'></marimo-text></marimo-ui-element></h3>\n<h3 id=\"please-enter-your-state-no-abbreviations-user_state\">Please enter your state, no abbreviations: <marimo-ui-element object-id='lEQa-8' random-id='30364bda-41d9-46ac-043e-8f46a2024601'><marimo-text data-initial-value='&quot;&quot;' data-label='null' data-placeholder='&quot;&quot;' data-kind='&quot;text&quot;' data-full-width='false' data-disabled='false' data-debounce='true'></marimo-text></marimo-ui-element></h3>\n<h3 id=\"please-enter-your-country-user_country\">Please enter your country: <marimo-ui-element object-id='lEQa-9' random-id='3f1c2596-f641-756c-5610-3cff7e08917f'><marimo-dropdown data-initial-value='[]' data-label='null' data-options='[&quot;AFG&quot;,&quot;ALB&quot;,&quot;DZA&quot;,&quot;ASM&quot;,&quot;AND&quot;,&quot;AGO&quot;,&quot;AIA&quot;,&quot;ATA&quot;,&quot;ATG&quot;,&quot;ARG&quot;,&quot;ARM&quot;,&quot;ABW&quot;,&quot;AUS&quot;,&quot;AUT&quot;,&quot;AZE&quot;,&quot;BHS&quot;,&quot;BHR&quot;,&quot;BGD&quot;,&quot;BRB&quot;,&quot;BLR&quot;,&quot;BEL&quot;,&quot;BLZ&quot;,&quot;BEN&quot;,&quot;BMU&quot;,&quot;BTN&quot;,&quot;BOL&quot;,&quot;BES&quot;,&quot;BIH&quot;,&quot;BWA&quot;,&quot;BVT&quot;,&quot;BRA&quot;,&quot;IOT&quot;,&quot;BRN&quot;,&quot;BGR&quot;,&quot;BFA&quot;,&quot;BDI&quot;,&quot;CPV&quot;,&quot;KHM&quot;,&quot;CMR&quot;,&quot;CAN&quot;,&quot;CYM&quot;,&quot;CAF&quot;,&quot;TCD&quot;,&quot;CHL&quot;,&quot;CHN&quot;,&quot;CXR&quot;,&quot;CCK&quot;,&quot;COL&quot;,&quot;COM&quot;,&quot;COD&quot;,&quot;COG&quot;,&quot;COK&quot;,&quot;CRI&quot;,&quot;HRV&quot;,&quot;CUB&quot;,&quot;CUW&quot;,&quot;CYP&quot;,&quot;CZE&quot;,&quot;CIV&quot;,&quot;DNK&quot;,&quot;DJI&quot;,&quot;DMA&quot;,&quot;DOM&quot;,&quot;ECU&quot;,&quot;EGY&quot;,&quot;SLV&quot;,&quot;GNQ&quot;,&quot;ERI&quot;,&quot;EST&quot;,&quot;SWZ&quot;,&quot;ETH&quot;,&quot;FLK&quot;,&quot;FRO&quot;,&quot;FJI&quot;,&quot;FIN&quot;,&quot;FRA&quot;,&quot;GUF&quot;,&quot;PYF&quot;,&quot;ATF&quot;,&quot;GAB&quot;,&quot;GMB&quot;,&quot;GEO&quot;,&quot;DEU&quot;,&quot;GHA&quot;,&quot;GIB&quot;,&quot;GRC&quot;,&quot;GRL&quot;,&quot;GRD&quot;,&quot;GLP&quot;,&quot;GUM&quot;,&quot;GTM&quot;,&quot;GGY&quot;,&quot;GIN&quot;,&quot;GNB&quot;,&quot;GUY&quot;,&quot;HTI&quot;,&quot;HMD&quot;,&quot;VAT&quot;,&quot;HND&quot;,&quot;HKG&quot;,&quot;HUN&quot;,&quot;ISL&quot;,&quot;IND&quot;,&quot;IDN&quot;,&quot;IRN&quot;,&quot;IRQ&quot;,&quot;IRL&quot;,&quot;IMN&quot;,&quot;ISR&quot;,&quot;ITA&quot;,&quot;JAM&quot;,&quot;JPN&quot;,&quot;JEY&quot;,&quot;JOR&quot;,&quot;KAZ&quot;,&quot;KEN&quot;,&quot;KIR&quot;,&quot;PRK&quot;,&quot;KOR&quot;,&quot;KWT&quot;,&quot;KGZ&quot;,&quot;LAO&quot;,&quot;LVA&quot;,&quot;LBN&quot;,&quot;LSO&quot;,&quot;LBR&quot;,&quot;LBY&quot;,&quot;LIE&quot;,&quot;LTU&quot;,&quot;LUX&quot;,&quot;MAC&quot;,&quot;MDG&quot;,&quot;MWI&quot;,&quot;MYS&quot;,&quot;MDV&quot;,&quot;MLI&quot;,&quot;MLT&quot;,&quot;MHL&quot;,&quot;MTQ&quot;,&quot;MRT&quot;,&quot;MUS&quot;,&quot;MYT&quot;,&quot;MEX&quot;,&quot;FSM&quot;,&quot;MDA&quot;,&quot;MCO&quot;,&quot;MNG&quot;,&quot;MNE&quot;,&quot;MSR&quot;,&quot;MAR&quot;,&quot;MOZ&quot;,&quot;MMR&quot;,&quot;NAM&quot;,&quot;NRU&quot;,&quot;NPL&quot;,&quot;NLD&quot;,&quot;NCL&quot;,&quot;NZL&quot;,&quot;NIC&quot;,&quot;NER&quot;,&quot;NGA&quot;,&quot;NIU&quot;,&quot;NFK&quot;,&quot;MNP&quot;,&quot;NOR&quot;,&quot;OMN&quot;,&quot;PAK&quot;,&quot;PLW&quot;,&quot;PSE&quot;,&quot;PAN&quot;,&quot;PNG&quot;,&quot;PRY&quot;,&quot;PER&quot;,&quot;PHL&quot;,&quot;PCN&quot;,&quot;POL&quot;,&quot;PRT&quot;,&quot;PRI&quot;,&quot;QAT&quot;,&quot;MKD&quot;,&quot;ROU&quot;,&quot;RUS&quot;,&quot;RWA&quot;,&quot;REU&quot;,&quot;BLM&quot;,&quot;SHN&quot;,&quot;KNA&quot;,&quot;LCA&quot;,&quot;MAF&quot;,&quot;SPM&quot;,&quot;VCT&quot;,&quot;WSM&quot;,&quot;SMR&quot;,&quot;STP&quot;,&quot;SAU&quot;,&quot;SEN&quot;,&quot;SRB&quot;,&quot;SYC&quot;,&quot;SLE&quot;,&quot;SGP&quot;,&quot;SXM&quot;,&quot;SVK&quot;,&quot;SVN&quot;,&quot;SLB&quot;,&quot;SOM&quot;,&quot;ZAF&quot;,&quot;SGS&quot;,&quot;SSD&quot;,&quot;ESP&quot;,&quot;LKA&quot;,&quot;SDN&quot;,&quot;SUR&quot;,&quot;SJM&quot;,&quot;SWE&quot;,&quot;CHE&quot;,&quot;SYR&quot;,&quot;TWN&quot;,&quot;TJK&quot;,&quot;TZA&quot;,&quot;THA&quot;,&quot;TLS&quot;,&quot;TGO&quot;,&quot;TKL&quot;,&quot;TON&quot;,&quot;TTO&quot;,&quot;TUN&quot;,&quot;TUR&quot;,&quot;TKM&quot;,&quot;TCA&quot;,&quot;TUV&quot;,&quot;UGA&quot;,&quot;UKR&quot;,&quot;ARE&quot;,&quot;GBR&quot;,&quot;UMI&quot;,&quot;USA&quot;,&quot;URY&quot;,&quot;UZB&quot;,&quot;VUT&quot;,&quot;VEN&quot;,&quot;VNM&quot;,&quot;VGB&quot;,&quot;VIR&quot;,&quot;WLF&quot;,&quot;ESH&quot;,&quot;YEM&quot;,&quot;ZMB&quot;,&quot;ZWE&quot;,&quot;ALA&quot;]' data-allow-select-none='true' data-searchable='false' data-full-width='false'></marimo-dropdown></marimo-ui-element></h3></span></marimo-dict></marimo-ui-element></marimo-form></marimo-ui-element>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "SFPL",
+      "code_hash": "7d9bbb4de64c5871239127e8ddd998a5",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": [
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "Beaumont, California, USA\n",
+          "mimetype": "text/plain"
+        }
+      ]
+    },
+    {
+      "id": "BYtC",
+      "code_hash": "0fc2040fc48cbcb6642ebaefda4a6e60",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h1 id=\"beaumont\">Beaumont</h1></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "RGSE",
+      "code_hash": "2c65b72844ab18c0f80b68822f845c1b",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/html": "<iframe src='./@file/22221-11948-zN2ltr7h.html' width='100%' height='400px' onload='__resizeIframe(this)' frameborder='0'></iframe>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Kclp",
+      "code_hash": "149ec05d14ec4d17b4c2386ae7762268",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h1 id=\"anamolies\">Anamolies:</h1></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "emfo",
+      "code_hash": "25475e48648a61200d5599f5cb52f79b",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "application/json": "[\"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><h1 id=\\\"temple-beth\\\">temple beth</h1></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><h2 id=\\\"explanation-no-nearby-locations-extreme-distance-from-road-66km-and-intersects-a-building\\\">Explanation: No nearby locations, extreme distance from road (6.6km), and intersects a building.</h2></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><h2 id=\\\"risk-level-high\\\">Risk Level: high</h2></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><h2 id=\\\"suggestion-verify-geocode-accuracy-location-may-be-misplaced-far-from-any-road-or-developed-area\\\">Suggestion: Verify geocode accuracy; location may be misplaced far from any road or developed area.</h2></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><span class=\\\"paragraph\\\">=========================================================================</span></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><h1 id=\\\"three-ring-elementary-school\\\">Three Ring Elementary School</h1></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><h2 id=\\\"explanation-very-high-surrounding-density-but-zero-building-distance-and-building-intersection-flagged\\\">Explanation: Very high surrounding density but zero building distance and building intersection flagged.</h2></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><h2 id=\\\"risk-level-medium\\\">Risk Level: medium</h2></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><h2 id=\\\"suggestion-confirm-school-footprint-alignment-with-building-polygons-and-verify-correct-placement-on-map\\\">Suggestion: Confirm school footprint alignment with building polygons and verify correct placement on map.</h2></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><span class=\\\"paragraph\\\">=========================================================================</span></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><h1 id=\\\"beaumont-rv-self-storage\\\">Beaumont RV &amp; Self Storage</h1></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><h2 id=\\\"explanation-no-nearby-locations-intersects-two-buildings-but-reasonably-close-to-road\\\">Explanation: No nearby locations, intersects two buildings, but reasonably close to road.</h2></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><h2 id=\\\"risk-level-medium\\\">Risk Level: medium</h2></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><h2 id=\\\"suggestion-check-if-duplicate-entry-with-beaumont-self-storage-and-verify-building-overlap-is-valid\\\">Suggestion: Check if duplicate entry with 'Beaumont Self Storage' and verify building overlap is valid.</h2></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><span class=\\\"paragraph\\\">=========================================================================</span></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><h1 id=\\\"beaumont-self-storage\\\">Beaumont Self Storage</h1></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><h2 id=\\\"explanation-no-nearby-locations-intersects-two-buildings-likely-duplicate-of-beaumont-rv-self-storage\\\">Explanation: No nearby locations, intersects two buildings; likely duplicate of 'Beaumont RV &amp; Self Storage'.</h2></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><h2 id=\\\"risk-level-medium\\\">Risk Level: medium</h2></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><h2 id=\\\"suggestion-investigate-potential-duplicate-record-and-confirm-building-intersection-accuracy\\\">Suggestion: Investigate potential duplicate record and confirm building intersection accuracy.</h2></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><span class=\\\"paragraph\\\">=========================================================================</span></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><h1 id=\\\"subway\\\">Subway</h1></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><h2 id=\\\"explanation-high-density-area-close-to-road-single-building-intersection-appears-normal-for-a-restaurant\\\">Explanation: High density area, close to road, single building intersection appears normal for a restaurant.</h2></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><h2 id=\\\"risk-level-low\\\">Risk Level: low</h2></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><h2 id=\\\"suggestion-quick-visual-confirmation-that-subway-location-aligns-with-correct-commercial-building\\\">Suggestion: Quick visual confirmation that Subway location aligns with correct commercial building.</h2></span>\", \"text/markdown:<span class=\\\"markdown prose dark:prose-invert contents\\\"><span class=\\\"paragraph\\\">=========================================================================</span></span>\"]"
+          }
+        }
+      ],
+      "console": []
+    }
+  ]
+}
