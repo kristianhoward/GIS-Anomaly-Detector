@@ -356,7 +356,7 @@ def _(conn, form, httpx, is_form_valid, map_data, mo):
 
     print(query)
 
-    with httpx.Client() as client:
+    with httpx.Client(timeout=60 * 5) as client:
         response = client.get(conn + "/anomaly", params={"city": query})
         anomaly_data = map_data(response.json())
     return (anomaly_data,)
