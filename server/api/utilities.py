@@ -22,7 +22,7 @@ def get_center_of_polygon(location: Series) -> Point:
     p = location['geometry']
     assert isinstance(p, Polygon)
 
-    return p.centroid
+    return p.representative_point()
 
 
 def serialize_location(location: Series) -> Dict:

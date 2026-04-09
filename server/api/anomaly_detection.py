@@ -5,7 +5,7 @@ import osmnx
 from geopandas import GeoDataFrame
 from networkx.classes import MultiDiGraph
 from pandas import Series, isna, DataFrame
-from shapely import Polygon
+from shapely import Point, Polygon
 from sklearn.ensemble import IsolationForest
 from sklearn.preprocessing import StandardScaler
 
@@ -160,8 +160,8 @@ class CityData:
     def intersects_other_locations(self, place: Series) -> List[Series]:
         p = place['geometry']
 
-        if isinstance(p, Polygon):
-            p = get_center_of_polygon(place)
+        if not isinstance(p, Point):
+            p = p.representative_point()
 
         potential_matches_idx = list(self._buildings.sindex.query(p, predicate='intersects'))
         intersections = [self._buildings.iloc[idx] for idx in potential_matches_idx
@@ -169,6 +169,8 @@ class CityData:
 
         return intersections
 
-    def ai_anomaly_response(self, percent: float = 0.05, nsmallest: int = 5) -> GeoDataFrame:
-        anomalies = self._amenities.merge(self._anomalies_detected(self._amenities, percent=percent), on="name", how="left").nsmallest(nsmallest, "anomaly_score")
-        return _CLAUDE_CLIENT.build_response(anomalies)
+    def ai_anomaly_response(self, percent: float = 0.05, score_threshold: float = -0.15) -> GeoDataFrame:
+        anomaly_scores = self._anomalies_detected(self._amenities, percent=percent)
+        merged = self._amenities.merge(anomaly_scores, on="name", how="left")
+        flagged = merged[merged["anomaly_score"] <= score_threshold].sort_values("anomaly_score")
+        return _CLAUDE_CLIENT.build_response(flagged)
