@@ -51,7 +51,7 @@ def place(city: str, location: str):
             "error": "Location not found"
         }
 
-    return [data.to_json() for data in location_data]
+    return [serialize_location(data) for data in location_data]
 
 
 @app.get("/nearest")
