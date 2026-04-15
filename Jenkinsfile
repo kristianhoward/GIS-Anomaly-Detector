@@ -17,13 +17,16 @@ pipeline {
         stage('Setup & Test') {
             steps {
                 bat """
-                    python -m venv venv
-                    call venv\\Scripts\\activate
+                    IF NOT EXIST venv (
+                        python -m venv venv
+                        call venv\\Scripts\\activate
 
-                    pip install --upgrade pip
-                    pip install .
-                    pip install -r server\\requirements.txt
-
+                        pip install --upgrade pip
+                        pip install .
+                        pip install -r server\\requirements.txt
+                    ) ELSE (
+                        call venv\\Scripts\\activate
+                    )
                     pytest %TEST_PATH%
                 """
             }
